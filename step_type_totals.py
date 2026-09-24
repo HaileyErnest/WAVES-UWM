@@ -2,8 +2,13 @@ from pathlib import Path
 import pandas as pd
 
 # Folders
-PROCESSED_FOLDER = Path("processed")
-TOTALS_FOLDER = PROCESSED_FOLDER / "step_type_totals"
+# OLD
+# PROCESSED_FOLDER = Path("processed")
+
+# NEW
+PROCESSED_FOLDER = Path("processed final")
+
+TOTALS_FOLDER = PROCESSED_FOLDER / "step type totals"
 
 # Create the new folder automatically
 TOTALS_FOLDER.mkdir(parents=True, exist_ok=True)

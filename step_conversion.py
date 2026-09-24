@@ -109,7 +109,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 1. READ CSV
-    # --------------------------------------------------------
 
     df = pd.read_csv(file_path)
 
@@ -118,7 +117,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 2. FIND REQUIRED COLUMNS
-    # --------------------------------------------------------
 
     observation_id_col = find_column(
         df,
@@ -164,7 +162,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # Check required columns
-    # --------------------------------------------------------
 
     required = {
         "Observation id": observation_id_col,
@@ -187,7 +184,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # Try extra logic to detect Behavior type
-    # --------------------------------------------------------
 
     if event_type_col is None:
 
@@ -224,7 +220,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 3. GET PID + SESSION
-    # --------------------------------------------------------
 
     observation_ids = (
         df[observation_id_col]
@@ -246,7 +241,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 4. CLEAN IMPORTANT VARIABLES
-    # --------------------------------------------------------
 
     df["_time"] = pd.to_numeric(
         df[time_col],
@@ -272,7 +266,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 5. DETERMINE SESSION LENGTH
-    # --------------------------------------------------------
 
     duration = None
 
@@ -306,7 +299,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 6. CREATE ONE ROW FOR EVERY SECOND
-    # --------------------------------------------------------
 
     result = pd.DataFrame({
         "pid": pid,
@@ -328,7 +320,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 7. FIND VALID STEP EVENTS
-    # --------------------------------------------------------
 
     step_events = df[
         (df["_event_type"] == "POINT") &
@@ -344,9 +335,6 @@ def process_step_file(file_path):
     #
     # 56.600 -> second 56
     # 57.333 -> second 57
-    # 65.867 -> second 65
-    #
-    # --------------------------------------------------------
 
     step_events["_second"] = np.floor(
         step_events["_time"]
@@ -355,7 +343,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 8. TOTAL STEPS PER SECOND
-    # --------------------------------------------------------
 
     total_counts = (
         step_events
@@ -374,7 +361,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 9. OPTIONAL COUNTS FOR EACH STEP TYPE
-    # --------------------------------------------------------
 
     for behavior_name, output_column in STEP_TYPES.items():
 
@@ -396,7 +382,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 10. NON-CODABLE INTERVALS
-    # --------------------------------------------------------
 
     noncodable_events = df[
         (df["_behavior"] == "noncodable") &
@@ -458,7 +443,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 11. MARK CODABLE VS NON-CODABLE
-    # --------------------------------------------------------
 
     result["codable"] = "codable"
 
@@ -492,7 +476,6 @@ def process_step_file(file_path):
 
     # --------------------------------------------------------
     # 12. PUT COLUMNS IN CLEAN ORDER
-    # --------------------------------------------------------
 
     result = result[
         [
@@ -514,7 +497,6 @@ def process_step_file(file_path):
 
 # ============================================================
 # RUN ALL CSV FILES
-# ============================================================
 
 all_results = []
 
@@ -551,7 +533,6 @@ for file_path in csv_files:
         # becomes
         #
         # 1013_2_Uwisc_StepCount_CN_seconds.csv
-        # ----------------------------------------------------
 
         output_name = (
             file_path.stem
@@ -589,7 +570,6 @@ for file_path in csv_files:
 
 # ============================================================
 # COMBINE ALL PARTICIPANTS
-# ============================================================
 
 if len(all_results) > 0:
 
@@ -603,7 +583,6 @@ if len(all_results) > 0:
     # FULL QC VERSION
     #
     # Keeps non-codable rows so you can inspect them.
-    # --------------------------------------------------------
 
     combined_path = (
         OUTPUT_FOLDER
@@ -623,7 +602,6 @@ if len(all_results) > 0:
     #
     # The formal WAVES codebook says the dataset submitted
     # should have non-codable / missing observations removed.
-    # --------------------------------------------------------
 
     waves_clean = combined[
         combined["codable"] == "codable"
